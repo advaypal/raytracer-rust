@@ -1,3 +1,4 @@
+mod vector;
 fn main() {
     const IMG_WIDTH : i32 = 256;
     const IMG_HEIGHT : i32 = 256;
