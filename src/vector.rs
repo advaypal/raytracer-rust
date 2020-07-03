@@ -6,19 +6,18 @@ use std::ops::Div;
 use std::ops::MulAssign;
 use std::ops::DivAssign;
 use std::ops::AddAssign;
-use std::assert;
 
 #[derive(Copy, Clone)]
-enum VectorType {
+pub enum VectorType {
     Point,
     Color,
 }
 
-struct Vector {
-    vec_type: VectorType,
-    x: f64,
-    y: f64,
-    z: f64,
+pub struct Vector {
+    pub vec_type: VectorType,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
 }
 
 // Operator overloading
@@ -156,4 +155,18 @@ impl Vector {
     fn print_vector(&self) -> () {
         println!("{}, {}, {}\n", self.x, self.y, self.z);
     }
+
+    pub fn write_color(&self) -> () {
+        match self.vec_type {
+            VectorType::Point => panic!("Not a color"),
+            VectorType::Color => {
+                let x_int = (255.99 * self.x) as i32;
+                let y_int = (255.99 * self.y) as i32;
+                let z_int = (255.99 * self.z) as i32;
+                println!("{} {} {}\n", x_int, y_int, z_int);
+            }
+        }
+    }
 }
+
+
