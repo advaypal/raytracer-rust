@@ -120,6 +120,8 @@ impl Div<f64> for Vector {
     }       
 }
 
+// Other functions
+
 impl Vector {
     fn length_squared(&self) -> f64 {
         self.x * self.x + self.y * self.y + self.z + self.z

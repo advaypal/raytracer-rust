@@ -1,6 +1,7 @@
 mod vector;
 use vector::Vector;
 use vector::VectorType;
+mod ray;
 fn main() {
     const IMG_WIDTH : i32 = 256;
     const IMG_HEIGHT : i32 = 256;
