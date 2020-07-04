@@ -144,7 +144,7 @@ impl Vector {
         }
     }
 
-    fn unit_vector(self) -> Self {
+    pub fn unit_vector(self) -> Self {
         let length = self.length();
         Self {
             vec_type: self.vec_type,
