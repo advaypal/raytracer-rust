@@ -8,18 +8,14 @@ use std::ops::DivAssign;
 use std::ops::AddAssign;
 
 #[derive(Copy, Clone)]
-pub enum VectorType {
-    Point,
-    Color,
-}
-
-#[derive(Copy, Clone)]
 pub struct Vector {
-    pub vec_type: VectorType,
     pub x: f64,
     pub y: f64,
     pub z: f64,
 }
+
+pub type Color = Vector;
+pub type Point = Vector;
 
 // Operator overloading
 
@@ -27,7 +23,6 @@ impl Neg for Vector {
     type Output = Self;
     fn neg(self) -> Self::Output {
         Self {
-            vec_type: self.vec_type,
             x: - self.x,
             y: - self.y,
             z: - self.z,
@@ -38,7 +33,6 @@ impl Neg for Vector {
 impl AddAssign for Vector {
     fn add_assign(&mut self, other: Self) {
         *self = Self {
-            vec_type: self.vec_type,
             x: self.x + other.x,
             y: self.y + other.y,
             z: self.z + other.z,
@@ -49,7 +43,6 @@ impl AddAssign for Vector {
 impl DivAssign<f64> for Vector {
     fn div_assign(&mut self, term: f64) {
         *self = Self {
-            vec_type: self.vec_type,
             x: self.x / term,
             y: self.y / term,
             z: self.z / term,
@@ -60,7 +53,6 @@ impl DivAssign<f64> for Vector {
 impl MulAssign<f64> for Vector {
     fn mul_assign(&mut self, term: f64) {
         *self = Self {
-            vec_type: self.vec_type,
             x: self.x * term,
             y: self.y * term,
             z: self.z * term,
@@ -73,7 +65,6 @@ impl Add for Vector {
 
     fn add(self, other: Self) -> Self {
         Self {
-            vec_type: self.vec_type,
             x: self.x + other.x,
             y: self.y + other.y,
             z: self.z + other.z,
@@ -87,7 +78,6 @@ impl Sub for Vector {
 
     fn sub(self, other: Self) -> Self {
         Self {
-            vec_type: self.vec_type,
             x: self.x - other.x,
             y: self.y - other.y,
             z: self.z - other.z,
@@ -100,7 +90,6 @@ impl Mul<f64> for Vector {
 
     fn mul(self, term: f64) -> Self {
         Self {
-            vec_type: self.vec_type,
             x: self.x * term,
             y: self.y * term,
             z: self.z * term,
@@ -113,7 +102,6 @@ impl Div<f64> for Vector {
 
     fn div(self, term: f64) -> Self {
         Self {
-            vec_type: self.vec_type,
             x: self.x / term,
             y: self.y / term,
             z: self.z / term,
@@ -138,7 +126,6 @@ impl Vector {
 
     fn cross(&self, other: Self) -> Self {
         Self {
-            vec_type: self.vec_type,
             x: self.y * other.z - self.z * other.y,
             y: self.z * other.x - self.x * other.z,
             z: self.x * other.y - self.y * other.x,
@@ -148,7 +135,6 @@ impl Vector {
     pub fn unit_vector(self) -> Self {
         let length = self.length();
         Self {
-            vec_type: self.vec_type,
             x: self.x / length,
             y: self.y / length,
             z: self.z / length,           
@@ -160,15 +146,10 @@ impl Vector {
     }
 
     pub fn write_color(&self) -> () {
-        match self.vec_type {
-            VectorType::Point => panic!("Not a color"),
-            VectorType::Color => {
-                // TODO investigate if we can multiply by something other than 255.999
-                let x_int = (self.x * 255.999) as i32;
-                let y_int = (self.y * 255.999) as i32;
-                let z_int = (self.z * 255.999) as i32;
-                println!("{} {} {}", x_int, y_int, z_int);
-            }
-        }
+        // TODO investigate if we can multiply by something other than 255.999
+        let x_int = (self.x * 255.999) as i32;
+        let y_int = (self.y * 255.999) as i32;
+        let z_int = (self.z * 255.999) as i32;
+        println!("{} {} {}", x_int, y_int, z_int);
     }
 }

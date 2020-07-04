@@ -2,7 +2,8 @@
 
 mod vector;
 use vector::Vector;
-use vector::VectorType;
+use vector::Color;
+use vector::Point;
 mod ray;
 use ray::Ray;
 
@@ -25,33 +26,13 @@ fn main() {
     const VIEWPORT_WIDTH: f64 = ASPECT_RATIO * VIEWPORT_HEIGHT;
     const FOCAL_LENGTH: f64 = 1.0;
 
-    const ORIGIN: Vector = Vector {
-        vec_type: VectorType::Point,
-        x: 0.0,
-        y: 0.0,
-        z: 0.0,
-    };
+    const ORIGIN: Point = Point { x: 0.0, y: 0.0, z: 0.0 };
 
-    const HORIZONTAL: Vector = Vector {
-        vec_type: VectorType::Point,
-        x: VIEWPORT_WIDTH,
-        y: 0.0,
-        z: 0.0,
-    };
+    const HORIZONTAL: Point = Point { x: VIEWPORT_WIDTH, y: 0.0, z: 0.0 };
 
-    const VERTICAL: Vector = Vector {
-        vec_type: VectorType::Point,
-        x: 0.0,
-        y: VIEWPORT_HEIGHT,
-        z: 0.0,
-    };
+    const VERTICAL: Point = Point { x: 0.0, y: VIEWPORT_HEIGHT, z: 0.0 };
 
-    const FOCAL_LENGTH_VEC: Vector = Vector {
-        vec_type: VectorType::Point,
-        x: 0.0,
-        y: 0.0,
-        z: FOCAL_LENGTH,
-    };
+    const FOCAL_LENGTH_VEC: Point = Point { x: 0.0, y: 0.0, z: FOCAL_LENGTH };
     
     // const doesn't allow function calls
     let LOWER_LEFT_CORNER = ORIGIN - HORIZONTAL / 2.0
@@ -79,10 +60,7 @@ fn main() {
             let v = f64::from(height) / HEIGHT_DENOM;
             let direction = LOWER_LEFT_CORNER + HORIZONTAL * u +
                 VERTICAL * v - ORIGIN;
-            let r = Ray {
-                origin: ORIGIN,
-                direction
-            };
+            let r = Ray { origin: ORIGIN, direction };
             let pixel_color = ray_color(r);
             pixel_color.write_color();
         }
@@ -90,45 +68,32 @@ fn main() {
     eprintln!("Done");
 }
 
-fn hits_sphere(center: Vector, radius: f64, r: Ray) -> bool {
-    
+fn hit_sphere(center: Point, radius: f64, r: Ray) -> f64 {
     let difference_vector = r.origin - center;
     let a = r.direction.length_squared();
     let b = 2.0 * difference_vector.dot(r.direction);
     let c = difference_vector.length_squared() - radius * radius;
-    b * b > 4.0 * a * c
+    let discriminant = b * b - 4.0 * a * c;
+    if discriminant < 0.0 {
+        -1.0
+    } else {
+        (-b - discriminant.sqrt()) / (2.0 * a)
+    }
+
 }
     
 
-fn ray_color(r: Ray) -> Vector {
-    let sphere_center = Vector {
-        vec_type: VectorType::Point,
-        x: 0.0,
-        y: 0.0,
-        z: -1.0,
-    };
-    if hits_sphere(sphere_center, 0.5, r) {
-        return Vector {
-            vec_type: VectorType::Color,
-            x: 1.0,
-            y: 0.0,
-            z: 0.0
-        };
+fn ray_color(r: Ray) -> Color {
+    let sphere_center = Point { x: 0.0, y: 0.0, z: -1.0 };
+    let t = hit_sphere(sphere_center, 0.5, r);
+    let unit_color = Color { x: 1.0, y: 1.0, z: 1.0 };
+    if t > 0.0 {
+        let N = (r.at(t) - sphere_center).unit_vector();
+        return (N + unit_color) * 0.5;
     }
-    
+            
     let unit_direction = r.direction.unit_vector();
     let t = 0.5 * (unit_direction.y + 1.0);
-    let unit_color = Vector {
-        vec_type: VectorType::Color,
-        x: 1.0,
-        y: 1.0,
-        z: 1.0,
-    };
-    let other_color = Vector {
-        vec_type: VectorType::Color,
-        x: 0.5,
-        y: 0.7,
-        z: 1.0,
-    };
+    let other_color = Color { x: 0.5, y: 0.7, z: 1.0 };
     unit_color * (1.0 - t) + other_color * t
 }
