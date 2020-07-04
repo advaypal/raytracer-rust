@@ -125,7 +125,7 @@ impl Div<f64> for Vector {
 
 impl Vector {
     fn length_squared(&self) -> f64 {
-        self.x * self.x + self.y * self.y + self.z + self.z
+        self.x * self.x + self.y * self.y + self.z * self.z
     }
 
     fn length(&self) -> f64 {
@@ -163,13 +163,17 @@ impl Vector {
         match self.vec_type {
             VectorType::Point => panic!("Not a color"),
             VectorType::Color => {
+                // TODO investigate if we can multiply by something other than 255.999
                 let x_int = (self.x * 255.999) as i32;
                 let y_int = (self.y * 255.999) as i32;
                 let z_int = (self.z * 255.999) as i32;
-                println!("{} {} {}", x_int, y_int, z_int);
+
+                let check = |v| v >= 0 && v <= 256;
+                let isColor = check(x_int) && check(y_int) && check(z_int);
+
+                if isColor { println!("{} {} {}", x_int, y_int, z_int) }
+                else { panic!(format!("Invalid color: {} {} {}", x_int, y_int, z_int)) }
             }
         }
     }
 }
-
-

@@ -68,7 +68,6 @@ fn main() {
 
     // Write maximum color value
     println!("{}", MAX_COLOUR_VALUE);
-    
 
     // Write pixels from top to bottom row
     for height in (0..IMG_HEIGHT).rev() {
