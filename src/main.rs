@@ -13,11 +13,11 @@ fn main() {
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
     
     const IMG_WIDTH : i32 = 384;
-    let width_denom : f64 = f64::from(IMG_WIDTH - 1);
+    let WIDTH_DENOM : f64 = f64::from(IMG_WIDTH - 1);
     
     // const doesn't allow function calls
     let IMG_HEIGHT : i32 = (f64::from(IMG_WIDTH) / ASPECT_RATIO) as i32;
-    let height_denom : f64 = f64::from(IMG_HEIGHT - 1);
+    let HEIGHT_DENOM : f64 = f64::from(IMG_HEIGHT - 1);
 
     const MAX_COLOUR_VALUE : i32 = 255;
 
