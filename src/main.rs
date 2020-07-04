@@ -25,7 +25,7 @@ fn main() {
     const VIEWPORT_WIDTH: f64 = ASPECT_RATIO * VIEWPORT_HEIGHT;
     const FOCAL_LENGTH: f64 = 1.0;
 
-    const ORIGIN: Vector  = Vector {
+    const ORIGIN: Vector = Vector {
         vec_type: VectorType::Point,
         x: 0.0,
         y: 0.0,
@@ -54,8 +54,8 @@ fn main() {
     };
     
     // const doesn't allow function calls
-    let LOWER_LEFT_CORNER = ORIGIN - HORIZONTAL / 2.0 - VERTICAL / 2.0 - FOCAL_LENGTH_VEC;
-
+    let LOWER_LEFT_CORNER = ORIGIN - HORIZONTAL / 2.0
+        - VERTICAL / 2.0 - FOCAL_LENGTH_VEC;
 
     // PPM specifications are here: http://davis.lbl.gov/Manuals/NETPBM/doc/ppm.html
     // PPM example: https://en.wikipedia.org/wiki/Netpbm#PPM_example
@@ -72,7 +72,7 @@ fn main() {
 
     // Write pixels from top to bottom row
     for height in (0..IMG_HEIGHT).rev() {
-        eprintln!("\rScanlines remaining: {} ", height);
+        eprintln!("Scanlines remaining: {} ", height);
 
         // Write the pixels for each row from left to right
         for width in 0..IMG_WIDTH {
@@ -88,7 +88,7 @@ fn main() {
             pixel_color.write_color();
         }
     }
-    eprintln!("\nDone\n");
+    eprintln!("Done");
 }
 
 fn ray_color(r: Ray) -> Vector {

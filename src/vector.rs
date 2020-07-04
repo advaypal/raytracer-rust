@@ -13,6 +13,7 @@ pub enum VectorType {
     Color,
 }
 
+#[derive(Copy, Clone)]
 pub struct Vector {
     pub vec_type: VectorType,
     pub x: f64,
@@ -162,9 +163,9 @@ impl Vector {
         match self.vec_type {
             VectorType::Point => panic!("Not a color"),
             VectorType::Color => {
-                let x_int = (255.99 * self.x) as i32;
-                let y_int = (255.99 * self.y) as i32;
-                let z_int = (255.99 * self.z) as i32;
+                let x_int = (self.x * 255.999) as i32;
+                let y_int = (self.y * 255.999) as i32;
+                let z_int = (self.z * 255.999) as i32;
                 println!("{} {} {}", x_int, y_int, z_int);
             }
         }
