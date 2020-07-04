@@ -124,7 +124,7 @@ impl Div<f64> for Vector {
 // Other functions
 
 impl Vector {
-    fn length_squared(&self) -> f64 {
+    pub fn length_squared(&self) -> f64 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
@@ -132,8 +132,8 @@ impl Vector {
         self.length_squared().sqrt()
     }
 
-    fn dot(&self, other: Self) -> f64 {
-       self.x * other.x + self.y + other.y + self.z * other.z
+    pub fn dot(&self, other: Self) -> f64 {
+        self.x * other.x + self.y * other.y + self.z * other.z
     }
 
     fn cross(&self, other: Self) -> Self {
@@ -155,8 +155,8 @@ impl Vector {
         }
     }
 
-    fn print_vector(&self) -> () {
-        println!("{}, {}, {}", self.x, self.y, self.z);
+    pub fn print_vector(&self) -> () {
+        eprintln!("{}, {}, {}", self.x, self.y, self.z);
     }
 
     pub fn write_color(&self) -> () {
@@ -167,12 +167,7 @@ impl Vector {
                 let x_int = (self.x * 255.999) as i32;
                 let y_int = (self.y * 255.999) as i32;
                 let z_int = (self.z * 255.999) as i32;
-
-                let check = |v| v >= 0 && v <= 256;
-                let isColor = check(x_int) && check(y_int) && check(z_int);
-
-                if isColor { println!("{} {} {}", x_int, y_int, z_int) }
-                else { panic!(format!("Invalid color: {} {} {}", x_int, y_int, z_int)) }
+                println!("{} {} {}", x_int, y_int, z_int);
             }
         }
     }

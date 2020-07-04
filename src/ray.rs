@@ -2,6 +2,7 @@ use crate::vector;
 use vector::Vector;
 
 // P(t) = A + t * b
+#[derive(Copy, Clone)]
 pub struct Ray {
     pub origin: Vector, // A
     pub direction: Vector, // b

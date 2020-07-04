@@ -90,7 +90,32 @@ fn main() {
     eprintln!("Done");
 }
 
+fn hits_sphere(center: Vector, radius: f64, r: Ray) -> bool {
+    
+    let difference_vector = r.origin - center;
+    let a = r.direction.length_squared();
+    let b = 2.0 * difference_vector.dot(r.direction);
+    let c = difference_vector.length_squared() - radius * radius;
+    b * b > 4.0 * a * c
+}
+    
+
 fn ray_color(r: Ray) -> Vector {
+    let sphere_center = Vector {
+        vec_type: VectorType::Point,
+        x: 0.0,
+        y: 0.0,
+        z: -1.0,
+    };
+    if hits_sphere(sphere_center, 0.5, r) {
+        return Vector {
+            vec_type: VectorType::Color,
+            x: 1.0,
+            y: 0.0,
+            z: 0.0
+        };
+    }
+    
     let unit_direction = r.direction.unit_vector();
     let t = 0.5 * (unit_direction.y + 1.0);
     let unit_color = Vector {
