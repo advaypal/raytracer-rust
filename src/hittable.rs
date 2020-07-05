@@ -3,7 +3,6 @@ use crate::ray;
 use ray::Ray;
 use vector::Vector;
 use vector::Point;
-use std::option;
 
 pub struct HitRecord {
     pub p: Point,

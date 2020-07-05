@@ -124,7 +124,7 @@ impl Vector {
         self.x * other.x + self.y * other.y + self.z * other.z
     }
 
-    fn cross(&self, other: Self) -> Self {
+    pub fn cross(&self, other: Self) -> Self {
         Self {
             x: self.y * other.z - self.z * other.y,
             y: self.z * other.x - self.x * other.z,
@@ -146,7 +146,6 @@ impl Vector {
     }
 
     pub fn write_color(&self) -> () {
-        // TODO investigate if we can multiply by something other than 255.999
         let x_int = (self.x * 255.999) as i32;
         let y_int = (self.y * 255.999) as i32;
         let z_int = (self.z * 255.999) as i32;

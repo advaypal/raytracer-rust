@@ -5,7 +5,6 @@ use hittable::HitRecord;
 use hittable::Hittable;
 use vector::Point;
 use ray::Ray;
-use std::option;
 
 pub struct Sphere {
     pub center: Point,
