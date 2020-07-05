@@ -9,6 +9,10 @@ mod ray;
 use ray::Ray;
 mod hittable;
 mod sphere;
+mod hittablelist;
+use hittable::Hittable;
+use hittablelist::HittableList;
+use sphere::Sphere;
 
 
 /*  =====================
@@ -73,6 +77,13 @@ fn main() {
     // Trace each pixel on the screen
     // Start from the lower left corner
     // Trace left to right, bottom to top row
+
+    let mut world = HittableList::new();
+    let sphere1 = Sphere { center: Point { x: 0.0, y: 0.0, z: -1.0 }, radius: 0.5 };
+    let sphere2 = Sphere { center: Point { x: 0.0, y: -100.5, z: -1.0 }, radius: 100.0 };
+    world.add(&sphere1);
+    world.add(&sphere2);
+    
     for height in (0..IMG_HEIGHT).rev() {
         eprintln!("Scanlines remaining: {} ", height);
         for width in 0..IMG_WIDTH {
@@ -87,40 +98,25 @@ fn main() {
 
             // Shoot a ray out to the pixel on the screen
             let r = Ray { origin: ORIGIN, direction };
-            let pixel_color = ray_color(r);
+            let pixel_color = ray_color(&r, &world);
             pixel_color.write_color();
         }
     }
     eprintln!("Done");
 }
 
-fn hit_sphere(center: Point, radius: f64, r: Ray) -> f64 {
-    let difference_vector = r.origin - center;
-    let a = r.direction.length_squared();
-    let b = 2.0 * difference_vector.dot(r.direction);
-    let c = difference_vector.length_squared() - radius * radius;
-    let discriminant = b * b - 4.0 * a * c;
-    if discriminant < 0.0 {
-        -1.0
-    } else {
-        (-b - discriminant.sqrt()) / (2.0 * a)
-    }
-
-}
-
-fn ray_color(r: Ray) -> Color {
-    let sphere_center = Point { x: 0.0, y: 0.0, z: -1.0 };
-    let t = hit_sphere(sphere_center, 0.5, r);
+fn ray_color(r: &Ray, world: &dyn Hittable) -> Color {
+    let hit_rec_opt = world.hit(r, 0.0, f64::INFINITY);
     let unit_color = Color { x: 1.0, y: 1.0, z: 1.0 };
-    if t > 0.0 {
-        let n = (r.at(t) - sphere_center).unit_vector();
-        return (n + unit_color) * 0.5;
+    match hit_rec_opt {
+        Some(hit_rec) => (hit_rec.normal + unit_color) * 0.5,
+        None => {
+            let unit_direction = r.direction.unit_vector();
+            let t = 0.5 * (unit_direction.y + 1.0);
+            let other_color = Color { x: 0.5, y: 0.7, z: 1.0 };
+            unit_color * (1.0 - t) + other_color * t            
+        }
     }
-            
-    let unit_direction = r.direction.unit_vector();
-    let t = 0.5 * (unit_direction.y + 1.0);
-    let other_color = Color { x: 0.5, y: 0.7, z: 1.0 };
-    unit_color * (1.0 - t) + other_color * t
 }
 
 // PPM specifications are here: http://davis.lbl.gov/Manuals/NETPBM/doc/ppm.html
