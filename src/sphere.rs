@@ -1,6 +1,7 @@
 use crate::hittable;
 use crate::ray;
 use crate::vector;
+
 use hittable::HitRecord;
 use hittable::Hittable;
 use vector::Point;
@@ -34,11 +35,20 @@ impl Hittable for Sphere {
             return None;
         }
 
+        let t = root;
+        let p = r.at(root);
+
+        let outward_normal = (p - self.center) / self.radius;
+        let front_face = hittable::update_record_face(r, outward_normal);
+        let normal = hittable::update_record_normal(&front_face, outward_normal);
+
         let record = HitRecord {
-            p: r.at(root),
-            t: root,
-            normal: (r.at(root) - self.center) / self.radius
+            p,
+            t,
+            front_face,
+            normal,
         };
+
         Some(record)   
     }
 }
