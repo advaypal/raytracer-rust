@@ -6,6 +6,8 @@ use vector::Color;
 use vector::Point;
 mod ray;
 use ray::Ray;
+mod hittable;
+mod sphere;
 
 
 // Write image to stdout
@@ -81,7 +83,6 @@ fn hit_sphere(center: Point, radius: f64, r: Ray) -> f64 {
     }
 
 }
-    
 
 fn ray_color(r: Ray) -> Color {
     let sphere_center = Point { x: 0.0, y: 0.0, z: -1.0 };
