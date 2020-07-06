@@ -13,35 +13,65 @@ pub struct Sphere {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
-        let difference_vector = r.origin - self.center;
-        let a = r.direction.length_squared();
-        let half_b = difference_vector.dot(r.direction);
-        let c = difference_vector.length_squared() - self.radius * self.radius;
-        let discriminant = half_b * half_b - a * c;
-        if discriminant < 0.0 {
-            return None;
-        }
-        
-        let disc_term = discriminant.sqrt();
-        let first_root = (-half_b - disc_term) / a;
-        let second_root = (-half_b + disc_term) / a;
-        let root;
-        if first_root < t_max && first_root > t_min {
-            root = first_root;
-        } else if second_root < t_max && second_root > t_min {
-            root = second_root;
+    /* Consider a sphere with center C and radius r.
+     *
+     * To check if point P is on its surface,
+     * Since Vector from Center to point P is (P - C),
+     * This condition must be satisfied:
+     * length of (P - C) == r
+     *
+     * Therefore,
+     * (P - C) · (P - C) = r ^ 2
+     *
+     * Point P exists for some t, on a Ray R: R(t) = O + t * d
+     * (O + td - C) · (O + td - C) = r ^ 2
+     *
+     * Expanding gives us a quadratic equation for t
+     * (d · d) * t ^ 2 + 2 * d · (A - C) * t + (A - C) · (A - C) - r ^ 2 = 0
+     *
+     * To solve t,
+     * let a = d · d
+     * let b = 2 * d · (O - C)
+     * let c = (O - C) · (O - C) - r ^ 2
+     * solve for: A * t^2 + B * t + C = 0
+     */
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
+        // Vector C -> O = O - C
+        let co = ray.origin - self.center;
+
+        let d = ray.direction;
+        let r = self.radius;
+
+        // Quadratic coefficients
+        let a = d.dot(d);
+        let b = (d * 2.0).dot(co);
+        let c = co.dot(co) - r * r;
+
+        let (first_root, second_root) = quadratic_solver(a, b, c)?;
+
+        // Check if in range
+        let in_range = |t| t > t_min && t < t_max;
+
+        // Record if in range
+        let root = if in_range(first_root) {
+            Some(first_root)
+        } else if in_range(second_root) {
+            Some(second_root)
         } else {
-            return None;
-        }
+            None
+        }?;
 
         let t = root;
-        let p = r.at(root);
 
+        // Incident ray coordinates
+        let p = ray.at(root);
+
+        // Calculate normal
         let outward_normal = (p - self.center) / self.radius;
-        let front_face = hittable::update_record_face(r, outward_normal);
+        let front_face = hittable::update_record_face(ray, outward_normal);
         let normal = hittable::update_record_normal(&front_face, outward_normal);
 
+        // Record the event
         let record = HitRecord {
             p,
             t,
@@ -51,4 +81,17 @@ impl Hittable for Sphere {
 
         Some(record)   
     }
+}
+
+// Solves quadratic equations in the form: ax^2 + bx + c = 0
+fn quadratic_solver(a: f64, b: f64, c: f64) -> Option<(f64, f64)> {
+    // b^2 - 4ac
+    let discriminant = b * b - 4.0 * a * c;
+    if discriminant < 0.0 {
+        return None;
+    }
+
+    // sqrt(b^2 - 4ac) / 2a
+    let common = discriminant.sqrt() / (2.0 * a);
+    return Some((-b - common, -b + common));
 }
