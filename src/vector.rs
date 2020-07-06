@@ -144,11 +144,5 @@ impl Vector {
     pub fn print_vector(&self) -> () {
         eprintln!("{}, {}, {}", self.x, self.y, self.z);
     }
-
-    pub fn write_color(&self) -> () {
-        let x_int = (self.x * 255.999) as i32;
-        let y_int = (self.y * 255.999) as i32;
-        let z_int = (self.z * 255.999) as i32;
-        println!("{} {} {}", x_int, y_int, z_int);
-    }
 }
+

@@ -14,10 +14,6 @@ impl Camera {
     // Aspect ratio = width / height
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
 
-    // Dimensions in pixels
-    pub const IMG_HEIGHT: i32 = 216;
-    pub const IMG_WIDTH: i32 = ( Camera::ASPECT_RATIO * Camera::IMG_HEIGHT as f64 ) as i32;
-
     // Dimensions in cartesian values
     const VIEWPORT_HEIGHT: f64 = 2.0;
     const VIEWPORT_WIDTH: f64 = Camera::ASPECT_RATIO * Camera::VIEWPORT_HEIGHT;
@@ -25,14 +21,6 @@ impl Camera {
     // Orthogonal distance from origin to the screen
     const FOCAL_LENGTH: f64 = 1.0;
 
-
-    /* ===================
-     * = IMAGE CONSTANTS =
-     * ===================
-     */
-
-    // Color values are integers over the range: [0, 255]
-    pub const MAX_COLOR_VALUE : i32 = 255;
 
     /* =================================
      * = VECTOR & COORDINATE CONSTANTS =
@@ -63,4 +51,3 @@ impl Camera {
         Ray { origin: Camera::ORIGIN, direction }
     }
 }
-
